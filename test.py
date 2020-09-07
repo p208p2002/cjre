@@ -5,4 +5,4 @@ if __name__ == "__main__":
     with open('test.txt','r',encoding='utf-8') as f:
         text = f.read()
     fact_text = extract_fact(text)
-    print(cjre.tagger(text, keep_flags=['v','vd','vn'], stopwords=['上列']))
+    print(cjre.tagger(text, keep_flags=['v','vd','vn'], stopwords=['上列','│']))
