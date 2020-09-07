@@ -9,7 +9,7 @@ class CJRE_jieba():
             jieba.set_dictionary(extra_dictionary_path)
         jieba.initialize()
 
-    def _tagger(self, text='', keep_flags=[], stopwords=[]):
+    def tagger(self, text='', keep_flags=[], stopwords=[]):
         """
         text: cj text
         keep_flags: https://github.com/fxsjy/jieba
