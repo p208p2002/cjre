@@ -8,8 +8,17 @@ class CJRE_jieba():
         if extra_dictionary_path is not None:
             jieba.set_dictionary(extra_dictionary_path)
         jieba.initialize()
+        #
+        self.keep_flags = []
+        self.stopwords = []
+    
+    def set_keep_flags(self, keep_flags=[]):
+        self.keep_flags = keep_flags
+    
+    def set_stopwords(self, stopwords=[]):
+        self.stopwords = stopwords
 
-    def tagger(self, text='', keep_flags=[], stopwords=[]):
+    def tagger(self, text=''):
         """
         text: cj text
         keep_flags: https://github.com/fxsjy/jieba
@@ -26,7 +35,7 @@ class CJRE_jieba():
         outs = []
         for word, flag in words:
             # print('%s %s' % (word, flag))
-            if(flag in keep_flags and word not in stopwords):
+            if(flag in self.keep_flags and word not in self.stopwords):
                 outs.append({"words":word,"flag":flag})
         return outs
 
