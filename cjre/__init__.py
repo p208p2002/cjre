@@ -15,7 +15,7 @@ class CJRE():
     def _set_stopwords(self, stopwords=[]):
         self.stopwords = stopwords
 
-    def extract_triple_res(self, text, stopwords=[], relation_flags=['v','vd','vn'], split_by='，'):
+    def extract_triple_res(self, text, stopwords=[], relation_flags=['v','vd','vn','V','VJ','VC','VK'], split_by='，'):
         fact_text = text.replace('\n','')
         fact_text_lines = fact_text.split(split_by)
 
