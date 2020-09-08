@@ -1,7 +1,7 @@
 # CJRE
 ## Install
 ```bash
-$ pip install git+https://github.com/p208p2002/cjre.git
+$ pip install -U git+https://github.com/p208p2002/cjre.git
 ```
 ## Usage
 ### cjre.extract_triple_res
