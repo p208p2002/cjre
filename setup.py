@@ -1,13 +1,18 @@
-from setuptools import setup
+from setuptools import setup, setuptools
 import os
 
-setup(
-    name='cjre',
-    version='0.0.1',
-    author='Philip Huang',
-    install_requires=[
-        # 'VerdictCut @ git+https://github.com/seanbbear/VerdictCut@master',
-        'jieba>=0.42.1'
-    ]
-)
+with open("README.md", "r", encoding='utf-8') as fh:
+    long_description = fh.read()
 
+setup(
+    name="cjre", # Replace with your own username
+    version="0.0.1",
+    author='Philip Huang',
+    author_email="p208p2002@gmail.com",
+    description="crje",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/p208p2002/cjre",
+    packages=setuptools.find_packages(),
+    python_requires='>=3.5',
+)
