@@ -19,7 +19,11 @@ if __name__ == "__main__":
     for triple_re in triple_res:
         print('-'.join(triple_re))
 ```
-```python
-# 王曉明-造成-王小美
-# 王小美-告-王曉明
+```
+context: 
+中華民國108年，王曉明造成王小美發生意外，王小美告王曉明
+
+results:
+王曉明-造成-王小美
+王小美-告-王曉明
 ```
