@@ -1,5 +1,6 @@
 import jieba
 import jieba.posseg as pseg
+import re
 
 class CJRE_jieba():
     def __init__(self, extra_dictionary_path=None):
@@ -12,10 +13,10 @@ class CJRE_jieba():
         self.keep_flags = []
         self.stopwords = []
     
-    def set_keep_flags(self, keep_flags=[]):
+    def _set_keep_flags(self, keep_flags=[]):
         self.keep_flags = keep_flags
     
-    def set_stopwords(self, stopwords=[]):
+    def _set_stopwords(self, stopwords=[]):
         self.stopwords = stopwords
 
     def tagger(self, text=''):
@@ -39,7 +40,33 @@ class CJRE_jieba():
                 outs.append({"words":word,"flag":flag})
         return outs
     
-    def extract_triple_re():
-        pass
+    def extract_triple_res(self, text, stopwords=[], relation_flags=['v','vd','vn']):
+        fact_text = text.replace('\n','')
+        fact_text_lines = fact_text.split('，')
+
+        #
+        results = []
+        for fact_text_line in fact_text_lines:
+            # find relation
+            self._set_keep_flags(relation_flags)
+            self._set_stopwords(stopwords)
+            relations = self.tagger(fact_text_line)
+            relations = [relation['words'] for relation in relations]
+
+            # find persion
+            self._set_keep_flags(['PER'])
+            self._set_stopwords(stopwords)
+            roles = self.tagger(fact_text_line)
+            roles = [role['words'] for role in roles]
+            for i,role_a in enumerate(roles):
+                for j,role_b in enumerate(roles):
+                    if(role_a == role_b):
+                        continue
+                    #
+                    for relation in relations:
+                        if(re.match('%(role_a)s.*%(relation)s.*%(role_b)s'%({"role_a":role_a, "role_b":role_b, "relation":relation,}),fact_text_line)):
+                            # print('%(role_a)s-%(relation)s-%(role_b)s'%({"role_a":role_a, "role_b":role_b, "relation":relation,}))
+                            results.append([role_a,relation,role_b])
+        return results
 
         
