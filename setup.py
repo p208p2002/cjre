@@ -14,5 +14,9 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/p208p2002/cjre",
     packages=setuptools.find_packages(),
+    install_requires=[
+        # 'VerdictCut @ git+https://github.com/seanbbear/VerdictCut@master',
+        'jieba>=0.42.1'
+    ],
     python_requires='>=3.5',
 )
