@@ -38,5 +38,8 @@ class CJRE_jieba():
             if(flag in self.keep_flags and word not in self.stopwords):
                 outs.append({"words":word,"flag":flag})
         return outs
+    
+    def extract_triple_re():
+        pass
 
         
