@@ -112,6 +112,14 @@ class CJRE_hybrid(CJRE_jieba):
     def __init__(self, **args):
         super().__init__()
         self.ckip = ckiptagger(**args)
+    
+    @staticmethod
+    def download_model(from_gd=False):
+        from ckiptagger import data_utils
+        if (from_gd):
+            data_utils.download_data_gdown("./") # gdrive-ckip
+        else:
+            data_utils.download_data_url("./") # iis-ckip
 
     def extract_triple_res(self, text, stopwords=[], relation_flags=['v.*','V.*'], split_by='，'):
         fact_text = text.replace('\n','')
@@ -143,9 +151,12 @@ class CJRE_hybrid(CJRE_jieba):
                             try:
                                 ckip_parse_results = self.ckip.parse([role_a,relation,role_b])
                                 ckip_role_a_ner = ckip_parse_results[0][0][2]
+                                ckip_role_a_name = ckip_parse_results[0][0][0]
+                                
                                 ckip_role_b_ner = ckip_parse_results[-1][0][2]
+                                ckip_role_b_name = ckip_parse_results[-1][0][0]
                                 if(ckip_role_a_ner == 'PERSON' and ckip_role_b_ner == 'PERSON'):
-                                    results.append([role_a,relation,role_b])
+                                    results.append([ckip_role_a_name,relation,ckip_role_b_name])
                             except Exception as e:
                                 print(e)  
             pbar.update(1)
@@ -155,10 +166,4 @@ class CJRE_hybrid(CJRE_jieba):
         results = self._remove_repeat_relations(results)
 
         return results
-    
-    
-    
-    
-    
-
     

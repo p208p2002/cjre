@@ -6,7 +6,7 @@ $ pip install -U git+https://github.com/p208p2002/cjre.git
 ## Basic Usage
 ``` python
 import cjre
-from cjre import CJRE_jieba, CJRE_ckip
+from cjre import CJRE_jieba, CJRE_ckip, CJRE_hybrid
 
 if __name__ == "__main__":
     print(cjre)
@@ -15,12 +15,17 @@ if __name__ == "__main__":
     cjre = CJRE_jieba()
 
     # use ckip
-    # CJRE_ckip.download_model() # download model first
-    # cjre = CJRE_ckip()
+    # CJRE_ckip.download_model() # download the model on first time
+    # cjre = CJRE_ckip(disable_cuda=False)
+
+    # use hybrid
+    # CJRE_hybrid.download_model() # download the model on first time
+    # cjre = CJRE_hybrid()
 
     with open('test.txt','r',encoding='utf-8') as f:
         text = f.read().replace('\r\n','\n')
     
+    # flags: https://github.com/fxsjy/jieba
     triple_res = cjre.extract_triple_res(text, stopwords=[])
     for triple_re in triple_res:
         print('-'.join(triple_re))
@@ -45,7 +50,23 @@ def tagger(self, text=''):
 ```python
 def extract_triple_res(self, text, stopwords=[], relation_flags=['v.*','V.*'], split_by='，'):
 ```
+
 ### cjre.CJRE_ckip
+```python
+def __init__(self, ckip_data_path = './data', custom_dict_path=None, disable_cuda=True, cuda_memory_limit=2048):
+```
+```python
+@staticmethod 
+def download_model(from_gd=False):
+```
+```python
+def tagger(self, text=''):
+```
+```python
+def extract_triple_res(self, text, stopwords=[], relation_flags=['v.*','V.*'], split_by='，'):
+```
+
+### cjre.CJRE_hybrid
 ```python
 def __init__(self, ckip_data_path = './data', custom_dict_path=None, disable_cuda=True, cuda_memory_limit=2048):
 ```
