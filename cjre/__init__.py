@@ -149,13 +149,27 @@ class CJRE_hybrid(CJRE_jieba):
                     for relation in relations:
                         if(re.match('%(role_a)s.*%(relation)s.*%(role_b)s'%({"role_a":role_a, "role_b":role_b, "relation":relation,}),fact_text_line)):                            
                             try:
-                                ckip_parse_results = self.ckip.parse([role_a,relation,role_b])
-                                ckip_role_a_ner = ckip_parse_results[0][0][2]
-                                ckip_role_a_name = ckip_parse_results[0][0][0]
+                                ckip_role_a_name = ''
+                                role_a_is_person = False
+                                ckip_parse_role_a = self.ckip.parse([role_a])[0]
+                                for _role in ckip_parse_role_a:
+                                    _tag, _pos, _ner = _role                                    
+                                    if(_ner == 'PERSON'):
+                                        role_a_is_person = True
+                                        ckip_role_a_name = _tag
+                                        break
                                 
-                                ckip_role_b_ner = ckip_parse_results[-1][0][2]
-                                ckip_role_b_name = ckip_parse_results[-1][0][0]
-                                if(ckip_role_a_ner == 'PERSON' and ckip_role_b_ner == 'PERSON'):
+                                ckip_role_b_name = ''
+                                role_b_is_person = False
+                                ckip_parse_role_b = self.ckip.parse([role_b])[0]
+                                for _role in ckip_parse_role_b:
+                                    _tag, _pos, _ner = _role                                    
+                                    if(_ner == 'PERSON'):
+                                        role_b_is_person = True
+                                        ckip_role_b_name = _tag
+                                        break
+
+                                if(role_a_is_person and role_b_is_person):
                                     results.append([ckip_role_a_name,relation,ckip_role_b_name])
                             except Exception as e:
                                 print(e)  
