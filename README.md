@@ -47,14 +47,14 @@ def extract_triple_res(self, text, stopwords=[], relation_flags=['v.*','V.*'], s
 ```
 ### cjre.CJRE_ckip
 ```python
-def __init__(self, ckip_data_path = './data', custom_dict_path=None, disable_cuda=True, cuda_memory_limit=2048)
+def __init__(self, ckip_data_path = './data', custom_dict_path=None, disable_cuda=True, cuda_memory_limit=2048):
 ```
 ```python
 @staticmethod 
-def download_model(from_gd=False)
+def download_model(from_gd=False):
 ```
 ```python
-def tagger(self, text='')
+def tagger(self, text=''):
 ```
 ```python
 def extract_triple_res(self, text, stopwords=[], relation_flags=['v.*','V.*'], split_by='，'):
