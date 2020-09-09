@@ -15,7 +15,15 @@ class CJRE():
     
     def _set_stopwords(self, stopwords=[]):
         self.stopwords = stopwords
-
+    
+    def _remove_repeat_relations(self, results):
+        for i,result in enumerate(results):
+            result = '-'.join(result)
+            results[i] = result
+        results = list(set(results))
+        results = [result.split("-") for result in results]
+        return results
+        
     def extract_triple_res(self, text, stopwords=[], relation_flags=['v.*','V.*'], split_by='，'):
         fact_text = text.replace('\n','')
         fact_text_lines = fact_text.split(split_by)
@@ -49,11 +57,8 @@ class CJRE():
         pbar.close()
 
         # process repeat relations
-        for i,result in enumerate(results):
-            result = '-'.join(result)
-            results[i] = result
-        results = list(set(results))
-        results = [result.split("-") for result in results]
+        results = self._remove_repeat_relations(results)
+
         return results
 
 class CJRE_jieba(CJRE):
@@ -66,16 +71,7 @@ class CJRE_jieba(CJRE):
     
     def tagger(self, text=''):
         """
-        text: cj text
         keep_flags: https://github.com/fxsjy/jieba
-                    标签	含义	标签	含义	标签	含义	标签	含义
-                    n	普通名词	f	方位名词	s	处所名词	t	时间
-                    nr	人名	ns	地名	nt	机构名	nw	作品名
-                    nz	其他专名	v	普通动词	vd	动副词	vn	名动词
-                    a	形容词	ad	副形词	an	名形词	d	副词
-                    m	数量词	q	量词	r	代词	p	介词
-                    c	连词	u	助词	xc	其他虚词	w	标点符号
-                    PER	人名	LOC	地名	ORG	机构名	TIME	时间
         """
         words = pseg.cut(text,use_paddle=True) #paddle模式
         outs = []
@@ -111,5 +107,58 @@ class CJRE_ckip(CJRE):
                 elif (re.match(keep_flag_pattern,ner) and tag not in self.stopwords):
                     outs.append({"words":tag,"flag":ner})
         return outs
+
+class CJRE_hybrid(CJRE_jieba):
+    def __init__(self, **args):
+        super().__init__()
+        self.ckip = ckiptagger(**args)
+
+    def extract_triple_res(self, text, stopwords=[], relation_flags=['v.*','V.*'], split_by='，'):
+        fact_text = text.replace('\n','')
+        fact_text_lines = fact_text.split(split_by)
+
+        #
+        results = []
+        pbar = tqdm(total=len(fact_text_lines))
+        for fact_text_line in fact_text_lines:
+            fact_text_line = fact_text_line.replace('-','')
+            # find relation
+            self._set_keep_flags(relation_flags)
+            self._set_stopwords(stopwords)
+            relations = self.tagger(fact_text_line)
+            relations = [relation['words'] for relation in relations]
+
+            # find persion
+            self._set_keep_flags(['PER','PERSON'])
+            self._set_stopwords(stopwords)
+            roles = self.tagger(fact_text_line)
+            roles = [role['words'] for role in roles]
+            for i,role_a in enumerate(roles):
+                for j,role_b in enumerate(roles):
+                    if(role_a == role_b):
+                        continue
+                    #
+                    for relation in relations:
+                        if(re.match('%(role_a)s.*%(relation)s.*%(role_b)s'%({"role_a":role_a, "role_b":role_b, "relation":relation,}),fact_text_line)):                            
+                            try:
+                                ckip_parse_results = self.ckip.parse([role_a,relation,role_b])
+                                ckip_role_a_ner = ckip_parse_results[0][0][2]
+                                ckip_role_b_ner = ckip_parse_results[-1][0][2]
+                                if(ckip_role_a_ner == 'PERSON' and ckip_role_b_ner == 'PERSON'):
+                                    results.append([role_a,relation,role_b])
+                            except Exception as e:
+                                print(e)  
+            pbar.update(1)
+        pbar.close()
+
+        # process repeat relations
+        results = self._remove_repeat_relations(results)
+
+        return results
+    
+    
+    
+    
+    
 
     
