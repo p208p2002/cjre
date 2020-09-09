@@ -21,7 +21,6 @@ if __name__ == "__main__":
     with open('test.txt','r',encoding='utf-8') as f:
         text = f.read().replace('\r\n','\n')
     
-    # flags: https://github.com/fxsjy/jieba
     triple_res = cjre.extract_triple_res(text, stopwords=[])
     for triple_re in triple_res:
         print('-'.join(triple_re))
