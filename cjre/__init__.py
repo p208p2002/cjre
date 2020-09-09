@@ -24,6 +24,7 @@ class CJRE():
         results = []
         pbar = tqdm(total=len(fact_text_lines))
         for fact_text_line in fact_text_lines:
+            fact_text_line = fact_text_line.replace('-','')
             # find relation
             self._set_keep_flags(relation_flags)
             self._set_stopwords(stopwords)
@@ -46,6 +47,13 @@ class CJRE():
                             results.append([role_a,relation,role_b])
             pbar.update(1)
         pbar.close()
+
+        # process repeat relations
+        for i,result in enumerate(results):
+            result = '-'.join(result)
+            results[i] = result
+        results = list(set(results))
+        results = [result.split("-") for result in results]
         return results
 
 class CJRE_jieba(CJRE):
