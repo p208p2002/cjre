@@ -33,7 +33,7 @@ if __name__ == "__main__":
             "type": "PERSON",
         })
         # relations
-        out['entities'].append({
+        out['relations'].append({
             "id": "",
             "from": role_a,
             "to": role_b,
