@@ -19,7 +19,8 @@ setup(
         'ckiptagger_interface @ git+https://github.com/p208p2002/ckiptagger_interface@master',
         'ckiptagger @ git+https://github.com/p208p2002/ckiptagger@ckiptagger-tf2.1',
         'gdown',
-        'tdqm'
+        'tdqm',
+        'VerdictCut @ git+https://github.com/seanbbear/VerdictCut@master'
     ],
     python_requires='>=3.5',
 )
