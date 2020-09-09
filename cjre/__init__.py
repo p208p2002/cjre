@@ -2,6 +2,7 @@ import jieba
 import jieba.posseg as pseg
 import re
 from ckiptagger_interface import ckiptagger
+from tqdm import tqdm
 
 class CJRE():
     def __init__(self, extra_dictionary_path=None):
@@ -15,12 +16,13 @@ class CJRE():
     def _set_stopwords(self, stopwords=[]):
         self.stopwords = stopwords
 
-    def extract_triple_res(self, text, stopwords=[], relation_flags=['v','vd','vn','V','VJ','VC','VK'], split_by='，'):
+    def extract_triple_res(self, text, stopwords=[], relation_flags=['v.*','V.*'], split_by='，'):
         fact_text = text.replace('\n','')
         fact_text_lines = fact_text.split(split_by)
 
         #
         results = []
+        pbar = tqdm(total=len(fact_text_lines))
         for fact_text_line in fact_text_lines:
             # find relation
             self._set_keep_flags(relation_flags)
@@ -40,8 +42,10 @@ class CJRE():
                     #
                     for relation in relations:
                         if(re.match('%(role_a)s.*%(relation)s.*%(role_b)s'%({"role_a":role_a, "role_b":role_b, "relation":relation,}),fact_text_line)):
-                            # print('%(role_a)s-%(relation)s-%(role_b)s'%({"role_a":role_a, "role_b":role_b, "relation":relation,}))
+                            print('%(role_a)s-%(relation)s-%(role_b)s'%({"role_a":role_a, "role_b":role_b, "relation":relation,}))
                             results.append([role_a,relation,role_b])
+            pbar.update(1)
+        pbar.close()
         return results
 
 class CJRE_jieba(CJRE):
@@ -67,9 +71,10 @@ class CJRE_jieba(CJRE):
         """
         words = pseg.cut(text,use_paddle=True) #paddle模式
         outs = []
+        keep_flag_pattern = '|'.join(self.keep_flags)
         for word, flag in words:
             # print('%s %s' % (word, flag))
-            if(flag in self.keep_flags and word not in self.stopwords):
+            if(re.match(keep_flag_pattern,flag) and word not in self.stopwords):
                 outs.append({"words":word,"flag":flag})
         return outs
 
@@ -89,12 +94,13 @@ class CJRE_ckip(CJRE):
     def tagger(self, text=''):
         outs = []
         sentences = self.ckip.parse([text])
+        keep_flag_pattern = '|'.join(self.keep_flags)
         for sentence in sentences:
             for word in sentence:
                 tag,pos,ner = word
-                if (pos in self.keep_flags and tag not in self.stopwords):
+                if (re.match(keep_flag_pattern,pos) and tag not in self.stopwords):
                     outs.append({"words":tag,"flag":pos})
-                elif (ner in self.keep_flags and tag not in self.stopwords):
+                elif (re.match(keep_flag_pattern,ner) and tag not in self.stopwords):
                     outs.append({"words":tag,"flag":ner})
         return outs
 

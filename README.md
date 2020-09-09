@@ -23,7 +23,7 @@ if __name__ == "__main__":
         text = f.read().replace('\r\n','\n')
     
     # flags: https://github.com/fxsjy/jieba
-    triple_res = cjre.extract_triple_res(text, stopwords=[], relation_flags=['v','vd','vn','V','VJ','VC','VK'])
+    triple_res = cjre.extract_triple_res(text, stopwords=[])
     for triple_re in triple_res:
         print('-'.join(triple_re))
 ```

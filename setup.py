@@ -18,7 +18,8 @@ setup(
         'jieba>=0.42.1',
         'ckiptagger_interface @ git+https://github.com/p208p2002/ckiptagger_interface@master',
         'ckiptagger @ git+https://github.com/p208p2002/ckiptagger@ckiptagger-tf2.1',
-        'gdown'
+        'gdown',
+        'tdqm'
     ],
     python_requires='>=3.5',
 )
