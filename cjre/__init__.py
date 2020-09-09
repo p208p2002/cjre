@@ -42,7 +42,7 @@ class CJRE():
                     #
                     for relation in relations:
                         if(re.match('%(role_a)s.*%(relation)s.*%(role_b)s'%({"role_a":role_a, "role_b":role_b, "relation":relation,}),fact_text_line)):
-                            print('%(role_a)s-%(relation)s-%(role_b)s'%({"role_a":role_a, "role_b":role_b, "relation":relation,}))
+                            # print('%(role_a)s-%(relation)s-%(role_b)s'%({"role_a":role_a, "role_b":role_b, "relation":relation,}))
                             results.append([role_a,relation,role_b])
             pbar.update(1)
         pbar.close()
