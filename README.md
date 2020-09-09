@@ -3,8 +3,7 @@
 ```bash
 $ pip install -U git+https://github.com/p208p2002/cjre.git
 ```
-## Usage
-### cjre.extract_triple_res
+## Basic Usage
 ``` python
 import cjre
 from cjre import CJRE_jieba, CJRE_ckip
@@ -34,4 +33,30 @@ context:
 results:
 王曉明-造成-王小美
 王小美-告-王曉明
+```
+
+## API
+### cjre.CJRE_jieba
+```python
+def __init__(self, extra_dictionary_path=None):
+```
+```python
+def tagger(self, text=''):
+```
+```python
+def extract_triple_res(self, text, stopwords=[], relation_flags=['v.*','V.*'], split_by='，'):
+```
+### cjre.CJRE_ckip
+```python
+def __init__(self, ckip_data_path = './data', custom_dict_path=None, disable_cuda=True, cuda_memory_limit=2048)
+```
+```python
+@staticmethod 
+def download_model(from_gd=False)
+```
+```python
+def tagger(self, text='')
+```
+```python
+def extract_triple_res(self, text, stopwords=[], relation_flags=['v.*','V.*'], split_by='，'):
 ```
