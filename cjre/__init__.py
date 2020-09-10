@@ -168,8 +168,9 @@ class CJRE_hybrid(CJRE_jieba):
                                         role_b_is_person = True
                                         ckip_role_b_name = _tag
                                         break
-
-                                if(role_a_is_person and role_b_is_person):
+                                    
+                                relation = relation.replace(" ","")
+                                if(role_a_is_person and role_b_is_person and relation != ""):
                                     results.append([ckip_role_a_name,relation,ckip_role_b_name])
                             except Exception as e:
                                 print(e)  
